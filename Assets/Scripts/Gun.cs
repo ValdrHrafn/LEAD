@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Gun : MonoBehaviour
+public abstract class Gun : MonoBehaviour, IThrowable
 {
     #region Variables
     [Header("Key Bindings")]
@@ -95,8 +95,7 @@ public abstract class Gun : MonoBehaviour
         isReloading = false;
     }
 
-    public virtual void Throw()
-    {
+    public void ThrowObject() {
 
-    }    
+    }
 }
