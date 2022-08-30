@@ -16,8 +16,8 @@ public static class MovementEvaluator
         return false;
     }
 
-    public static float LookDownDistance(GameObject player) {
-        if (Physics.Raycast(player.transform.position, Vector3.down, out var hit, 10f)) 
+    public static float LookDownDistance(GameObject player, float distance) {
+        if (Physics.Raycast(player.transform.position, Vector3.down, out var hit, distance)) 
         {
             return hit.distance;
         }
