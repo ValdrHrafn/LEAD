@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Key Bindings")]
@@ -48,19 +49,24 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float graceCount; //coyote time
     #endregion
 
-    void Start() {
+    void Start() 
+    {
         charController = GetComponent<CharacterController>();
     }
 
-    void Update() {
+    void Update() 
+    {
         //Gravity and normal forces
-        if (!MovementEvaluator.IsGrounded(gameObject)) {
-            if (Timer(ref graceCount) <= 0) {
+        if (!MovementEvaluator.IsGrounded(gameObject)) 
+        {
+            if (Timer(ref graceCount) <= 0) 
+            {
                 forceVert += forceVertGravity * Time.deltaTime;
                 frictionGround = airControl;
             }
         }
-        else if (MovementEvaluator.IsGrounded(gameObject) && velocity.y < 0) {
+        else if (MovementEvaluator.IsGrounded(gameObject) && velocity.y <= 0) 
+        {
             //resetting and presetting all necessary values
             graceCount = graceTime;
             frictionGround = PHFrictionGroundPlane;
@@ -71,7 +77,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Jump
-        if (Input.GetKey(inputJump) && velocity.y > longJumpEnd) {
+        if (Input.GetKey(inputJump) && velocity.y > longJumpEnd) 
+        {
             Jump();
         }
 
@@ -89,14 +96,18 @@ public class PlayerMovement : MonoBehaviour
         charController.Move((velocity) * Time.deltaTime);
     }
     
-    float Timer(ref float timer) {
-        if ((timer -= Time.deltaTime) <= 0) 
+    float Timer(ref float timer) 
+    {
+        if ((timer -= Time.deltaTime) <= 0)
+        {
             return 0f;
+        }
 
         return timer -= Time.deltaTime;
     }
 
-    public void Jump() {
+    public void Jump() 
+    {
         graceCount = 0;
         forceNormal = jumpVelocity;
         jumpVelocity += -forceVertGravity * longJump * Time.deltaTime;
