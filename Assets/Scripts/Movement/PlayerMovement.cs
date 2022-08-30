@@ -24,7 +24,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float longJump; //How far u go up
     [SerializeField] private float longJumpEndVelocity; //how high up from start of jump arc when falling the long jump will stop  
 
-
     [Header("Forces of Nature")]
     [SerializeField] private float PHFrictionGroundPlane; //friction of ground
     [SerializeField] private float frictionAir; //friction of air
@@ -33,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float forceNormalGround; //How hard is the ground
     [SerializeField] private float graceTime; //coyote time
     #endregion
+
     #region Output Variables
     [Header("\nOutput")]
 
@@ -48,24 +48,19 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float graceCount; //coyote time
     #endregion
 
-    void Start()
-    {
+    void Start() {
         charController = GetComponent<CharacterController>();
     }
 
-    void Update()
-    {
+    void Update() {
         //Gravity and normal forces
-        if (!charController.isGrounded)
-        {
-            if (Timer(ref graceCount) <= 0)
-            {
+        if (!MovementEvaluator.IsGrounded(gameObject)) {
+            if (Timer(ref graceCount) <= 0) {
                 forceVert += forceVertGravity * Time.deltaTime;
                 frictionGround = airControl;
             }
         }
-        else if (charController.isGrounded && velocity.y < 0)
-        {
+        else if (MovementEvaluator.IsGrounded(gameObject) && velocity.y < 0) {
             //resetting and presetting all necessary values
             graceCount = graceTime;
             frictionGround = PHFrictionGroundPlane;
@@ -76,8 +71,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Jump
-        if (Input.GetKey(inputJump) && velocity.y > longJumpEnd)
-        {
+        if (Input.GetKey(inputJump) && velocity.y > longJumpEnd) {
             Jump();
         }
 
@@ -95,16 +89,14 @@ public class PlayerMovement : MonoBehaviour
         charController.Move((velocity) * Time.deltaTime);
     }
     
-    float Timer(ref float timer)
-    {
+    float Timer(ref float timer) {
         if ((timer -= Time.deltaTime) <= 0) 
             return 0f;
 
         return timer -= Time.deltaTime;
     }
 
-    public virtual void Jump()
-    {
+    public void Jump() {
         graceCount = 0;
         forceNormal = jumpVelocity;
         jumpVelocity += -forceVertGravity * longJump * Time.deltaTime;

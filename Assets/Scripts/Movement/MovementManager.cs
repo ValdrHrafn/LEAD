@@ -39,14 +39,6 @@ public class MovementManager : MonoBehaviour
     //Wallrunning hits 
     [HideInInspector] public RaycastHit[] hits;
 
-    ////checksbools
-    //[HideInInspector] public bool airborne;
-    //[HideInInspector] public bool dashing;
-    //[HideInInspector] public bool sprinting;
-    //[HideInInspector] public bool sliding;
-    //[HideInInspector] public bool crouching;
-    //[HideInInspector] public bool wallriding;
-
     //Keep track
     [HideInInspector] public float currentJumps;
     [HideInInspector] public float currentDashes;

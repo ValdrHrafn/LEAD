@@ -6,6 +6,7 @@ public class GroundedState : MoveState {
     public override void OnEnter() {
         owner.velocity = new Vector3(0, -2f, 0);
         owner.currentDashes = owner.dashAmount;
+        owner.currentJumps = owner.jumpAmount;
     }
 
     public override void OnExit() {
@@ -26,6 +27,10 @@ public class GroundedState : MoveState {
         if (Input.GetKeyDown(KeyCode.Space)) {
             velocity += new Vector3(0, Mathf.Sqrt(owner.jumpHeight * -2 * owner.gravity), 0);
 
+            owner.ChangeState(owner.airbornState);
+        }
+
+        if (!MovementEvaluator.IsGrounded(owner.gameObject)) {
             owner.ChangeState(owner.airbornState);
         }
 
