@@ -30,10 +30,6 @@ public class GroundedState : MoveState {
             owner.ChangeState(owner.airbornState);
         }
 
-        if (!MovementEvaluator.IsGrounded(owner.gameObject)) {
-            owner.ChangeState(owner.airbornState);
-        }
-
         if (Input.GetKeyDown(KeyCode.LeftControl)) {
             owner.ChangeState(owner.crouchingState);
         }

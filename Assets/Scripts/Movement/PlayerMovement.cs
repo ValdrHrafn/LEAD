@@ -57,7 +57,7 @@ public class PlayerMovement : MonoBehaviour
     void Update() 
     {
         //Gravity and normal forces
-        if (!MovementEvaluator.IsGrounded(gameObject)) 
+        if (!MovementEvaluator.IsGrounded(charController)) 
         {
             if (Timer(ref graceCount) <= 0) 
             {
@@ -65,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
                 frictionGround = airControl;
             }
         }
-        else if (MovementEvaluator.IsGrounded(gameObject) && velocity.y <= 0) 
+        else if (MovementEvaluator.IsGrounded(charController) && velocity.y <= 0) 
         {
             //resetting and presetting all necessary values
             graceCount = graceTime;

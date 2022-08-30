@@ -4,16 +4,24 @@ using UnityEngine;
 
 public static class MovementEvaluator
 {
-    public static bool IsGrounded(GameObject player) {
-        Vector3 origin = player.transform.position + new Vector3(0, .1f, 0);
-        Debug.DrawRay(origin,Vector3.down * 1.3f, Color.blue);
+    public static bool IsGrounded(CharacterController controller) {
+        Vector3 origin = controller.transform.position + new Vector3(0, .1f, 0);
 
-        if(Physics.Raycast(origin, Vector3.down, out var hit, .3f)) 
+        if(Physics.Raycast(origin, Vector3.down, out var hit, .2f)) 
         {
-            player.transform.position = hit.point;
+            controller.Move(new Vector3(0, -hit.distance, 0));
             return true;
         }
 
         return false;
+    }
+
+    public static float LookDownDistance(GameObject player) {
+        if (Physics.Raycast(player.transform.position, Vector3.down, out var hit, 10f)) 
+        {
+            return hit.distance;
+        }
+
+        return 0;
     }
 }
