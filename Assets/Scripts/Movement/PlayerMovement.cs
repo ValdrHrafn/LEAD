@@ -32,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float forceVertGravity; //How gravity acting on you
     [SerializeField] private float forceNormalGround; //How hard is the ground
     [SerializeField] private float graceTime; //coyote time
+    [SerializeField] private float ledgeDepth; //how deep the fall after a ledge has to be to consider the ledge a ledge and not something else
     #endregion
 
     #region Output Variables
@@ -57,15 +58,7 @@ public class PlayerMovement : MonoBehaviour
     void Update() 
     {
         //Gravity and normal forces
-        if (!MovementEvaluator.IsGrounded(charController)) 
-        {
-            if (Timer(ref graceCount) <= 0) 
-            {
-                forceVert += forceVertGravity * Time.deltaTime;
-                frictionGround = airControl;
-            }
-        }
-        else if (MovementEvaluator.IsGrounded(charController) && velocity.y <= 0) 
+        if (MovementEvaluator.IsGrounded(charController) && velocity.y <= 0) 
         {
             //resetting and presetting all necessary values
             graceCount = graceTime;
@@ -74,6 +67,14 @@ public class PlayerMovement : MonoBehaviour
             forceNormal = forceNormalGround - forceVert;
             jumpVelocity = jumpStrength + forceNormal;
             longJumpEnd = -(jumpStrength + forceNormalGround - longJumpEndVelocity);
+        }        
+        else if (!MovementEvaluator.IsGrounded(charController))
+        {
+            if (Timer(ref graceCount) <= 0)
+            {
+                forceVert += forceVertGravity * Time.deltaTime;
+                frictionGround = airControl;
+            }
         }
 
         //Jump

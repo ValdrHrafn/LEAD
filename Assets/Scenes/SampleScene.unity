@@ -1362,6 +1362,7 @@ MonoBehaviour:
   forceVertGravity: -20
   forceNormalGround: -1
   graceTime: 0.25
+  ledgeDepth: 2
   velocity: {x: 0, y: 0, z: 0}
   jumpVelocity: 0
   longJumpEnd: 0
