@@ -19,9 +19,8 @@ public static class MovementEvaluator
     {
         Vector3 origin = controller.transform.position + new Vector3(0, .1f, 0);
         Vector3 normal; 
-        int layerMask = LayerMask.GetMask("Ground");
 
-        if (Physics.Raycast(origin, Vector3.down, out var hit, .3f, layerMask))
+        if (Physics.Raycast(origin, Vector3.down, out var hit, .3f))
         {
             normal = hit.normal;
             return normal;

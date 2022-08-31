@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private KeyCode inputJump = KeyCode.Space;
     [SerializeField] private KeyCode inputWalk = KeyCode.LeftControl;
 
-    [SerializeField] private Transform playerTransform;
+    [SerializeField] private Transform transformNormal;
 
     #region Input Variables
     private CharacterController charController;
@@ -59,8 +59,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        //transform.rotation = Quaternion.FromToRotation(transform.up, MovementEvaluator.GroundNormal(charController));
-        playerTransform.rotation = Quaternion.FromToRotation(transform.up, MovementEvaluator.GroundNormal(charController));
+        transformNormal.rotation = Quaternion.FromToRotation(transformNormal.up, MovementEvaluator.GroundNormal(charController)) * transformNormal.rotation;
 
         //Gravity and normal forces
         if (MovementEvaluator.IsGrounded(charController) && velocity.y <= 0) 
@@ -77,6 +76,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (Timer.NegTimer(ref graceCount) <= 0)
             {
+                transformNormal.rotation = transform.rotation;
                 forceVert += forceVertGravity * Time.deltaTime;
                 frictionGround = airControl;
             }
@@ -89,8 +89,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Movement WASD
-        var velocityInputHor = transform.right * Input.GetAxisRaw("Horizontal");
-        var velocityInputVer = transform.forward * Input.GetAxisRaw("Vertical");
+        var velocityInputHor = transformNormal.right * Input.GetAxisRaw("Horizontal");
+        var velocityInputVer = transformNormal.forward * Input.GetAxisRaw("Vertical");
 
         var movementSpeed = runSpeed * frictionGround;
         var forceDrag = 1f - (frictionAir + frictionGround) * .01f;
