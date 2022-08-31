@@ -9,6 +9,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private KeyCode inputJump = KeyCode.Space;
     [SerializeField] private KeyCode inputWalk = KeyCode.LeftControl;
 
+    [SerializeField] private Transform playerTransform;
+
     #region Input Variables
     private CharacterController charController;
 
@@ -55,8 +57,11 @@ public class PlayerMovement : MonoBehaviour
         charController = GetComponent<CharacterController>();
     }
 
-    void Update() 
+    void Update()
     {
+        //transform.rotation = Quaternion.FromToRotation(transform.up, MovementEvaluator.GroundNormal(charController));
+        playerTransform.rotation = Quaternion.FromToRotation(transform.up, MovementEvaluator.GroundNormal(charController));
+
         //Gravity and normal forces
         if (MovementEvaluator.IsGrounded(charController) && velocity.y <= 0) 
         {
@@ -70,7 +75,7 @@ public class PlayerMovement : MonoBehaviour
         }        
         else if (!MovementEvaluator.IsGrounded(charController))
         {
-            if (Timer(ref graceCount) <= 0)
+            if (Timer.NegTimer(ref graceCount) <= 0)
             {
                 forceVert += forceVertGravity * Time.deltaTime;
                 frictionGround = airControl;
@@ -95,16 +100,6 @@ public class PlayerMovement : MonoBehaviour
         velocity.y = forceVert + forceNormal;
 
         charController.Move((velocity) * Time.deltaTime);
-    }
-    
-    float Timer(ref float timer) 
-    {
-        if ((timer -= Time.deltaTime) <= 0)
-        {
-            return 0f;
-        }
-
-        return timer -= Time.deltaTime;
     }
 
     public void Jump() 
