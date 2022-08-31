@@ -34,7 +34,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float forceVertGravity; //How gravity acting on you
     [SerializeField] private float forceNormalGround; //How hard is the ground
     [SerializeField] private float graceTime; //coyote time
-    [SerializeField] private float ledgeDepth; //how deep the fall after a ledge has to be to consider the ledge a ledge and not something else
     #endregion
 
     #region Output Variables
@@ -60,6 +59,9 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         transformNormal.rotation = Quaternion.FromToRotation(transformNormal.up, MovementEvaluator.GroundNormal(charController)) * transformNormal.rotation;
+        var euler = transformNormal.localEulerAngles;
+        euler.y = 0;
+        transformNormal.localEulerAngles = euler;
 
         //Gravity and normal forces
         if (MovementEvaluator.IsGrounded(charController) && velocity.y <= 0) 
@@ -76,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (Timer.NegTimer(ref graceCount) <= 0)
             {
-                transformNormal.rotation = transform.rotation;
+                //transformNormal.rotation = transform.rotation;
                 forceVert += forceVertGravity * Time.deltaTime;
                 frictionGround = airControl;
             }
@@ -89,15 +91,15 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Movement WASD
-        var velocityInputHor = transformNormal.right * Input.GetAxisRaw("Horizontal");
-        var velocityInputVer = transformNormal.forward * Input.GetAxisRaw("Vertical");
+        var velocityInputX = transformNormal.right * Input.GetAxisRaw("Horizontal");
+        var velocityInputZ = transformNormal.forward * Input.GetAxisRaw("Vertical");
 
         var movementSpeed = runSpeed * frictionGround;
         var forceDrag = 1f - (frictionAir + frictionGround) * .01f;
 
-        velocity += (velocityInputHor + velocityInputVer).normalized * movementSpeed * Time.deltaTime;
+        velocity += (velocityInputX + velocityInputZ).normalized * movementSpeed * Time.deltaTime;
         velocity *= forceDrag;
-        velocity.y = forceVert + forceNormal;
+        //velocity.y = forceVert + forceNormal;
 
         charController.Move((velocity) * Time.deltaTime);
     }

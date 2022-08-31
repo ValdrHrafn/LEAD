@@ -381,8 +381,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1730353966}
-  m_Father: {fileID: 1299238733}
-  m_RootOrder: 1
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &608946065
 MonoBehaviour:
@@ -541,7 +541,7 @@ GameObject:
   m_Component:
   - component: {fileID: 757289869}
   m_Layer: 9
-  m_Name: PlayerTransform
+  m_Name: MovementAxis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -746,39 +746,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 995854867}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1299238731
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1299238733}
-  m_Layer: 9
-  m_Name: PlayerContainer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1299238733
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1299238731}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1880752293}
-  - {fileID: 608946063}
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1308193924
 GameObject:
   m_ObjectHideFlags: 0
@@ -1345,7 +1312,7 @@ GameObject:
   - component: {fileID: 1880752296}
   - component: {fileID: 1880752294}
   m_Layer: 9
-  m_Name: PlayerController
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1366,8 +1333,8 @@ Transform:
   - {fileID: 995854868}
   - {fileID: 1597360224}
   - {fileID: 757289869}
-  m_Father: {fileID: 1299238733}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1880752294
 MonoBehaviour:
@@ -1383,7 +1350,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputJump: 32
   inputWalk: 306
-  playerTransform: {fileID: 757289869}
+  transformNormal: {fileID: 757289869}
   runSpeed: 20
   walkSpeedModif: 0.69
   jumpStrength: 6
@@ -1395,7 +1362,6 @@ MonoBehaviour:
   forceVertGravity: -20
   forceNormalGround: -1
   graceTime: 0.25
-  ledgeDepth: 2
   velocity: {x: 0, y: 0, z: 0}
   jumpVelocity: 0
   longJumpEnd: 0

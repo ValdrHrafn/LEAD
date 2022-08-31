@@ -28,8 +28,6 @@ public class CamHandler : MonoBehaviour
         {
             CollStaticVar.camRayEndPos = hit.point;
             CollStaticVar.camRayHit = true;
-
-            //Debug.Log("You're looking at " + hit.collider.gameObject.name);
         }
         else
         {

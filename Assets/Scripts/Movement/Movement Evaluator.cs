@@ -18,13 +18,11 @@ public static class MovementEvaluator
     public static Vector3 GroundNormal(CharacterController controller)
     {
         Vector3 origin = controller.transform.position + new Vector3(0, .1f, 0);
-        Vector3 normal; 
+        Vector3 normal;
+        LayerMask groundLayer = LayerMask.GetMask("Ground");
 
-        if (Physics.Raycast(origin, Vector3.down, out var hit, .3f))
-        {
-            normal = hit.normal;
-            return normal;
-        }
-        return Vector3.zero;
+        Physics.Raycast(origin, Vector3.down, out var hit, 1, groundLayer);
+        normal = IsGrounded(controller) ? hit.normal : Vector3.up;
+        return normal;
     }
 }
