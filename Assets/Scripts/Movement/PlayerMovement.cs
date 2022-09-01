@@ -7,7 +7,6 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Key Bindings")]
     [SerializeField] private KeyCode inputJump = KeyCode.Space;
-    [SerializeField] private KeyCode inputWalk = KeyCode.LeftControl;
 
     [SerializeField] private Transform transformNormal;
 
@@ -18,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Movement Speed")]
     [SerializeField] private float runSpeed; //Standard speed
+    [SerializeField] private float sprintSpeedModifyer; //How much faster is run with empty hands
     [Range(0f, 1f)]
     [SerializeField] private float walkSpeedModif; //How much slower is walking
 
@@ -25,13 +25,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpStrength; //How far u go up
     [Range(0f, 1f)]
     [SerializeField] private float longJump; //How far u go up
-    [SerializeField] private float longJumpEndVelocity; //how high up from start of jump arc when falling the long jump will stop  
-
+    [Range(0f, 1f)]
+    [SerializeField] private float longJumpEndAt; //at what speed it stop
+                                                  
     [Header("Forces of Nature")]
     [SerializeField] private float PHFrictionGroundPlane; //friction of ground
     [SerializeField] private float frictionAir; //friction of air
     [SerializeField] private float airControl; //how much can you move in the air
     [SerializeField] private float forceVertGravity; //How gravity acting on you
+    [SerializeField] private float forceVertPotential; //How hard gravity storing on you
     [SerializeField] private float forceNormalGround; //How hard is the ground
     [SerializeField] private float graceTime; //coyote time
     #endregion
@@ -40,7 +42,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("\nOutput")]
 
     [Header("Movement")]
-    [SerializeField] private Vector3 velocity; //What way u movin in the end
+    [SerializeField] private float transformVert;
+    [SerializeField] private Vector3 transformVelocity; //What way u movin
+    [SerializeField] private Vector3 finalVelocity; //What way u movin in the end
     [SerializeField] private float jumpVelocity; // what speed the jump be
     [SerializeField] private float longJumpEnd; //until when you can keep longjumping
 
@@ -64,28 +68,27 @@ public class PlayerMovement : MonoBehaviour
         transformNormal.localEulerAngles = euler;
 
         //Gravity and normal forces
-        if (MovementEvaluator.IsGrounded(charController) && velocity.y <= 0) 
+        if (MovementEvaluator.IsGrounded(charController) && finalVelocity.y <= 0) 
         {
             //resetting and presetting all necessary values
             graceCount = graceTime;
             frictionGround = PHFrictionGroundPlane;
             forceVert = 0;
-            forceNormal = forceNormalGround - forceVert;
+            forceNormal = forceNormalGround;
             jumpVelocity = jumpStrength + forceNormal;
-            longJumpEnd = -(jumpStrength + forceNormalGround - longJumpEndVelocity);
+            longJumpEnd = -(jumpStrength + forceNormalGround) * longJumpEndAt + transformVelocity.y;
         }        
         else if (!MovementEvaluator.IsGrounded(charController))
         {
             if (Timer.NegTimer(ref graceCount) <= 0)
             {
-                //transformNormal.rotation = transform.rotation;
                 forceVert += forceVertGravity * Time.deltaTime;
                 frictionGround = airControl;
             }
         }
 
         //Jump
-        if (Input.GetKey(inputJump) && velocity.y > longJumpEnd) 
+        if ((Input.GetKey(inputJump) && finalVelocity.y > longJumpEnd) || (Input.GetKeyDown(inputJump)))
         {
             Jump();
         }
@@ -97,11 +100,13 @@ public class PlayerMovement : MonoBehaviour
         var movementSpeed = runSpeed * frictionGround;
         var forceDrag = 1f - (frictionAir + frictionGround) * .01f;
 
-        velocity += (velocityInputX + velocityInputZ).normalized * movementSpeed * Time.deltaTime;
-        velocity *= forceDrag;
-        //velocity.y = forceVert + forceNormal;
+        transformVelocity += (velocityInputX + velocityInputZ).normalized * movementSpeed * Time.deltaTime;
+        transformVelocity *= forceDrag;
+        finalVelocity.y = transformVelocity.y + forceVert + forceNormal;
+        finalVelocity.x = transformVelocity.x;
+        finalVelocity.z = transformVelocity.z;
 
-        charController.Move((velocity) * Time.deltaTime);
+        charController.Move((finalVelocity) * Time.deltaTime);
     }
 
     public void Jump() 

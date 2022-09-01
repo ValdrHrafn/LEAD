@@ -6,9 +6,10 @@ public static class MovementEvaluator
 {
     public static bool IsGrounded(CharacterController controller)
     {
-        Vector3 origin = controller.transform.position + new Vector3(0, .1f, 0);
+        LayerMask groundLayer = LayerMask.GetMask("Ground");
+        Vector3 origin = controller.transform.position + new Vector3(0, .4f, 0);
 
-        if (Physics.Raycast(origin, Vector3.down, out var hit, .3f))
+        if (Physics.CheckSphere(origin, .45f, groundLayer))
         {
             return true;
         }
