@@ -2036,28 +2036,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputJump: 32
   transformNormal: {fileID: 757289869}
-  runSpeed: 20
+  runSpeed: 12
   sprintSpeedModifyer: 0
-  walkSpeedModif: 0.69
+  walkSpeedModif: 0
   jumpStrength: 6
-  longJump: 0.5
-  longJumpEndAt: 1
-  PHFrictionGroundPlane: 10
-  frictionAir: 0.2
-  airControl: 0.5
+  phTractionGroundPlane: 10
+  phForceNormalGroundPlane: 0
+  tractionAir: 2
+  dragAir: 0
   forceVertGravity: -20
   forceVertPotential: 0
-  forceNormalGround: -1
-  graceTime: 0.1
-  transformVert: 0
   transformVelocity: {x: 0, y: 0, z: 0}
   finalVelocity: {x: 0, y: 0, z: 0}
   jumpVelocity: 0
-  longJumpEnd: 0
-  frictionGround: 5
+  traction: 0
   forceVert: 0
   forceNormal: 0
-  graceCount: 0
 --- !u!143 &1880752296
 CharacterController:
   m_ObjectHideFlags: 0

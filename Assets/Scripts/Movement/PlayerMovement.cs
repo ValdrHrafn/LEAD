@@ -18,41 +18,51 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement Speed")]
     [SerializeField] private float runSpeed; //Standard speed
     [SerializeField] private float sprintSpeedModifyer; //How much faster is run with empty hands
+    #region range & explanation
     [Range(0f, 1f)]
+    //0 = no movement
+    //1 = 100% movement
+    #endregion
     [SerializeField] private float walkSpeedModif; //How much slower is walking
 
     [Header("Jumping")]
     [SerializeField] private float jumpStrength; //How far u go up
-    [Range(0f, 1f)]
-    [SerializeField] private float longJump; //How far u go up
-    [Range(0f, 1f)]
-    [SerializeField] private float longJumpEndAt; //at what speed it stop
                                                   
     [Header("Forces of Nature")]
-    [SerializeField] private float PHFrictionGroundPlane; //friction of ground
-    [SerializeField] private float frictionAir; //friction of air
-    [SerializeField] private float airControl; //how much can you move in the air
+    #region range & explanation
+    [Range(0f, 100f)] 
+    //<10 = slippery.
+    // 10 = perfect control on ground.
+    //>10 = friction overtakes traction and you move slower
+    #endregion 
+    [SerializeField] private float phTractionGroundPlane; //friction of ground
+    [SerializeField] private float phForceNormalGroundPlane; //How hard is the ground
+    #region range & explanation
+    [Range(0f, 100f)] 
+    // 0 = no control, full preservation of momentum.
+    // 1 = allows to correct to 50%.
+    // 2 = full error correction in air.
+    //>2 = overcorrection, you can move further back than from where you started.
+    //10-100 = friction surpasses traction and you start slowing down.
+    #endregion 
+    [SerializeField] private float tractionAir; //how much movement control you have in air. 
+    [SerializeField] private float dragAir; //friction of air
     [SerializeField] private float forceVertGravity; //How gravity acting on you
     [SerializeField] private float forceVertPotential; //How hard gravity storing on you
-    [SerializeField] private float forceNormalGround; //How hard is the ground
-    [SerializeField] private float graceTime; //coyote time
-    #endregion
+    #endregion 
 
-    #region Output Variables
+    #region Result Variables
     [Header("\nOutput")]
 
     [Header("Movement")]
-    [SerializeField] private float transformVert;
     [SerializeField] private Vector3 transformVelocity; //What way u movin
     [SerializeField] private Vector3 finalVelocity; //What way u movin in the end
     [SerializeField] private float jumpVelocity; // what speed the jump be
-    [SerializeField] private float longJumpEnd; //until when you can keep longjumping
 
     [Header("Forces of Nature")]
-    [SerializeField] private float frictionGround; //friction of ground
+    [SerializeField] private float traction; //friction of ground
     [SerializeField] private float forceVert; //Current vertical forces
     [SerializeField] private float forceNormal; //current normal forces
-    [SerializeField] private float graceCount; //coyote time
     #endregion
 
     void Start() 
@@ -68,27 +78,23 @@ public class PlayerMovement : MonoBehaviour
         transformNormal.localEulerAngles = euler;
 
         //Gravity and normal forces
-        if (MovementEvaluator.IsGrounded(charController) && finalVelocity.y <= 0) 
+        if (MovementEvaluator.IsGrounded(charController) && finalVelocity.y <= transformVelocity.y) 
         {
             //resetting and presetting all necessary values
-            graceCount = graceTime;
-            frictionGround = PHFrictionGroundPlane;
-            forceVert = 0;
-            forceNormal = forceNormalGround;
-            jumpVelocity = jumpStrength + forceNormal;
-            longJumpEnd = -(jumpStrength + forceNormalGround) * longJumpEndAt + transformVelocity.y;
+            traction = phTractionGroundPlane;
+            forceNormal = phForceNormalGroundPlane;
+            forceVert = -forceVertPotential;
+            jumpVelocity = jumpStrength - phForceNormalGroundPlane;
         }        
         else if (!MovementEvaluator.IsGrounded(charController))
         {
-            if (Timer.NegTimer(ref graceCount) <= 0)
-            {
-                forceVert += forceVertGravity * Time.deltaTime;
-                frictionGround = airControl;
-            }
+            forceVert += forceVertGravity * Time.deltaTime;
+            traction = tractionAir;
+            jumpVelocity = 0;
         }
 
         //Jump
-        if ((Input.GetKey(inputJump) && finalVelocity.y > longJumpEnd) || (Input.GetKeyDown(inputJump)))
+        if (Input.GetKeyDown(inputJump))
         {
             Jump();
         }
@@ -96,23 +102,20 @@ public class PlayerMovement : MonoBehaviour
         //Movement WASD
         var velocityInputX = transformNormal.right * Input.GetAxisRaw("Horizontal");
         var velocityInputZ = transformNormal.forward * Input.GetAxisRaw("Vertical");
-
-        var movementSpeed = runSpeed * frictionGround;
-        var forceDrag = 1f - (frictionAir + frictionGround) * .01f;
+        traction = Mathf.Clamp(traction, 0, 100);
+        var movementSpeed = runSpeed * traction;
+        var forceDrag = 1f - (dragAir + traction) * .01f;
 
         transformVelocity += (velocityInputX + velocityInputZ).normalized * movementSpeed * Time.deltaTime;
         transformVelocity *= forceDrag;
+        finalVelocity = transformVelocity;
         finalVelocity.y = transformVelocity.y + forceVert + forceNormal;
-        finalVelocity.x = transformVelocity.x;
-        finalVelocity.z = transformVelocity.z;
 
         charController.Move((finalVelocity) * Time.deltaTime);
     }
 
     public void Jump() 
     {
-        graceCount = 0;
-        forceNormal = jumpVelocity;
-        jumpVelocity += -forceVertGravity * longJump * Time.deltaTime;
+        forceNormal += jumpVelocity;
     }
 }
