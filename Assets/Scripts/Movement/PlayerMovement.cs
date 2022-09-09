@@ -6,9 +6,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Key Bindings")]
-    [SerializeField] private KeyCode inputJump = KeyCode.Space;
-
-    [SerializeField] private Transform transformNormal;
+    [SerializeField] private KeyCode keyInputJump = KeyCode.Space;
 
     #region Input Variables
     private CharacterController charController;
@@ -16,7 +14,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("\nInput")]
 
     [Header("Movement Speed")]
-    [SerializeField] private float runSpeed; //Standard speed
+    [SerializeField] private Transform transformNormal;
+    [SerializeField] private float runSpeed; //Standard movement speed
     [SerializeField] private float sprintSpeedModifyer; //How much faster is run with empty hands
     #region range & explanation
     [Range(0f, 1f)]
@@ -24,8 +23,6 @@ public class PlayerMovement : MonoBehaviour
     //1 = 100% movement
     #endregion
     [SerializeField] private float walkSpeedModif; //How much slower is walking
-
-    [Header("Jumping")]
     [SerializeField] private float jumpStrength; //How far u go up
                                                   
     [Header("Forces of Nature")]
@@ -72,20 +69,14 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        transformNormal.rotation = Quaternion.FromToRotation(transformNormal.up, MovementEvaluator.GroundNormal(charController)) * transformNormal.rotation;
-        var euler = transformNormal.localEulerAngles;
-        euler.y = 0;
-        transformNormal.localEulerAngles = euler;
-
         //Gravity and normal forces
-        if (MovementEvaluator.IsGrounded(charController) && finalVelocity.y <= transformVelocity.y) 
-        {
-            //resetting and presetting all necessary values
+        if (MovementEvaluator.IsGrounded(charController) && finalVelocity.y <= transformVelocity.y)
+        {   //resetting and presetting all necessary values
             traction = phTractionGroundPlane;
             forceNormal = phForceNormalGroundPlane;
             forceVert = -forceVertPotential;
             jumpVelocity = jumpStrength - phForceNormalGroundPlane;
-        }        
+        }
         else if (!MovementEvaluator.IsGrounded(charController))
         {
             forceVert += forceVertGravity * Time.deltaTime;
@@ -93,25 +84,30 @@ public class PlayerMovement : MonoBehaviour
             jumpVelocity = 0;
         }
 
-        //Jump
-        if (Input.GetKeyDown(inputJump))
-        {
-            Jump();
-        }
-
-        //Movement WASD
+        //Take the normal of the ground under you and adjust Movement
+        transformNormal.rotation = Quaternion.FromToRotation(transformNormal.up, MovementEvaluator.GroundNormal(charController)) * transformNormal.rotation;
+        var euler = transformNormal.localEulerAngles;
+        euler.y = 0;
+        transformNormal.localEulerAngles = euler;
+        //WASD
         var velocityInputX = transformNormal.right * Input.GetAxisRaw("Horizontal");
         var velocityInputZ = transformNormal.forward * Input.GetAxisRaw("Vertical");
+        //resistance and velocity calcs
         traction = Mathf.Clamp(traction, 0, 100);
         var movementSpeed = runSpeed * traction;
         var forceDrag = 1f - (dragAir + traction) * .01f;
-
+        //add everything into the sauce
         transformVelocity += (velocityInputX + velocityInputZ).normalized * movementSpeed * Time.deltaTime;
         transformVelocity *= forceDrag;
         finalVelocity = transformVelocity;
         finalVelocity.y = transformVelocity.y + forceVert + forceNormal;
-
         charController.Move((finalVelocity) * Time.deltaTime);
+
+        //Jump
+        if (Input.GetKeyDown(keyInputJump))
+        {
+            Jump();
+        }
     }
 
     public void Jump() 
