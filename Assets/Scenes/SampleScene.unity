@@ -2292,6 +2292,7 @@ GameObject:
   - component: {fileID: 1880752293}
   - component: {fileID: 1880752296}
   - component: {fileID: 1880752294}
+  - component: {fileID: 1880752297}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -2329,24 +2330,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b963b57acc6ca34409622950ea31ed4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keyInputJump: 32
   transformNormal: {fileID: 757289869}
   runSpeed: 12
   sprintSpeedModifyer: 0
   walkSpeedModif: 0
   jumpStrength: 6
-  phTractionGroundPlane: 10
+  phTractionGroundPlane: 0.2
   phForceNormalGroundPlane: 0
-  tractionAir: 2
+  tractionAir: 0
   dragAir: 0
   forceVertGravity: -20
   forceVertPotential: 0
+  moveInput: {x: 0, y: 0}
   transformVelocity: {x: 0, y: 0, z: 0}
   finalVelocity: {x: 0, y: 0, z: 0}
   jumpVelocity: 0
   traction: 0
   forceVert: 0
   forceNormal: 0
+  forceNormalPush: 0
 --- !u!143 &1880752296
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2365,6 +2367,80 @@ CharacterController:
   m_SkinWidth: 0.1
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &1880752297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1880752292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 0504c04e7bb48ab40bf184ad727a6539, type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1880752294}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: GetInputMove
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 066450bd-7b74-46b9-a0d3-eb5a2e61b658
+    m_ActionName: Player/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1880752294}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: Jump
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 5aab0bef-5449-46a9-a3d1-2a83c47b6b1f
+    m_ActionName: Player/Jump[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ebb2cbb6-1aba-4bef-9561-3e74545b10b9
+    m_ActionName: Player/Look[/Mouse/delta]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b7598a70-d984-45a3-bb3d-3cb49ba87292
+    m_ActionName: Player/Shoot[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: eaf91004-9a3d-4dfb-8eef-173928a5c3e5
+    m_ActionName: Player/Throw[/Mouse/rightButton]
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &1935540186
 GameObject:
   m_ObjectHideFlags: 0
