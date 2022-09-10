@@ -89,9 +89,9 @@ public class PlayerMovement : MonoBehaviour
         moveDirection = transformNormal.TransformDirection(moveDirection);
 
        //resistance and acceleration calcs
-        traction = Mathf.Clamp(traction, 0, 100);
+        var friction = Mathf.Clamp(traction, 0, 100);
         var movementSpeed = runSpeed;
-        var forceDrag = 1f - (traction) * 0.1f;
+        var forceDrag = 1f - (friction) * 0.01f;
 
        //add everything into the sauce
         transformVelocity += moveDirection * movementSpeed * Time.deltaTime;
