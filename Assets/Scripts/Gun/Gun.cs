@@ -9,7 +9,6 @@ public abstract class Gun : MonoBehaviour, IThrowable
     [SerializeField] public KeyCode inputShoot = KeyCode.Mouse0;
 
     [Header("\nPosition")]
-    [SerializeField] private Transform handPos;
 
     [Header("Stats")]
     [SerializeField] private int health;
@@ -30,24 +29,10 @@ public abstract class Gun : MonoBehaviour, IThrowable
 
     protected virtual void Update()
     {
-        AimBehaviour();
-
         if (shotsCount <= 0 && !isReloading)
         {
             isReloading = true;
             Invoke("Reload", reloadTime);
-        }
-    }
-
-    public void AimBehaviour()
-    {
-        if (CollStaticVar.camRayHit)
-        {
-            transform.LookAt(CollStaticVar.camRayEndPos);
-        }
-        else
-        {
-            transform.rotation = handPos.rotation;
         }
     }
 
