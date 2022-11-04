@@ -21,36 +21,34 @@ public class PlayerMovement : MonoBehaviour
     [Range(0f, 100f)]
     [Tooltip(">10 = friction overtakes traction and you move slower.\n10 = perfect control on ground.\n<10 = slippery.")]
     #endregion
-    [SerializeField] private float phTractionGroundPlane; //friction of ground
+    public float phTractionGroundPlane; //friction of ground
     #region range & tooltip
     [Range(0f, 100f)]
     [Tooltip(">10 = friction surpasses traction and you start slowing down.\n>2 = overcorrection, you can move further back than from where you started.\n2 = full error correction in air.\n0 = no control, full preservation of momentum.")]
     #endregion
-    [SerializeField] private float phTractionAir; //how much movement control you have in air.
-    [SerializeField] private float phForceNormalGroundPlane; //How hard is the ground
+    public float phTractionAir; //how much movement control you have in air.
+    public float phForceNormalGroundPlane; //How hard is the ground
 
     [SerializeField] private float forceVertPotential; //How hard gravity storing on you
     [SerializeField] private float forceVertGravity; //How gravity acting on you
     #endregion 
 
     #region Result Variables
-    [Header("\nOutput")]
-
     [Header("Movement")]
-    [SerializeField] private float movementSpeed; //What speed is the movement
-    [SerializeField] private float jumpVelocity; //What velocity does the Jump add
+    private float movementSpeed; //What speed is the movement
+    private float jumpVelocity; //What velocity does the Jump add
 
-    [SerializeField] private Vector2 moveInput; //translated WASD to XY
-    [SerializeField] private Vector3 moveDirection; //translated WASD to XYZ
-    [SerializeField] private Vector3 moveVelocity; //What way u movin
-    [SerializeField] private Vector3 finalVelocity; //What way u movin in the end
+    private Vector2 moveInput; //translated WASD to XY
+    private Vector3 moveDirection; //translated WASD to XYZ
+    private Vector3 moveVelocity; //where are you moving and how fast initially. Without Y
+    private Vector3 finalVelocity; //where are you moving and how fast in the end. With Y forces
 
     [Header("Forces of Nature")]
-    [SerializeField] private float traction; //the traction on whatever surface you are on
-    [SerializeField] private float friction; //friction of ground
-    [SerializeField] private float forceVert; //Current vertical forces
-    [SerializeField] private float forceNormal; //current normal forces
-    [SerializeField] private float forceNormalPush; //Any opposite forces pushed into the ground
+    private float traction; //The inherited traction on whatever surface you are on
+    private float friction; //The inherited friction of ground
+    private float forceVert; //Current vertical forces
+    private float forceNormal; //Current normal forces
+    private float forceNormalPush; //Any opposite forces pushed into the ground
     #endregion
 
     void Start()
@@ -71,7 +69,7 @@ public class PlayerMovement : MonoBehaviour
             forceVert = forceVertPotential;
 
             forceNormal = phForceNormalGroundPlane + forceNormalPush;
-            jumpVelocity = jumpStrength - phForceNormalGroundPlane;
+            jumpVelocity = jumpStrength - phForceNormalGroundPlane - forceVertPotential;
         }
         else if (!IsGrounded(charController))
         {
